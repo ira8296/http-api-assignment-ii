@@ -25,9 +25,9 @@ const respondJSONMeta = (request, response, status) => {
 };
 
 const addUser = (request, response, params) => {
-  const newUser = {
-    createdAt: Date.now(),
-  };
+  const newUser = {};
+    
+  let responseCode = 201;
 
   if (!params.name || !params.age) {
     const responseJSON = {
@@ -36,21 +36,20 @@ const addUser = (request, response, params) => {
     };
     return respondJSON(request, response, 400, responseJSON);
   }
-
-  if (users[params.name]) {
-    //users[params.name] = {};
+  else if (users[params.name]) {
+    users[params.name] = {};
     users[params.name].name = params.name;
     users[params.name].age = params.age;
     // users[params.name] = newUser;
-    return respondJSONMeta(request, response, 204);
+    responseCode = 204;
   }
-
-  newUser.name = params.name;
-  newUser.age = params.age;
-  newUser.message = 'Created successfully';
-  users[newUser.createdAt] = newUser;
-
-  return respondJSON(request, response, 201, newUser);
+  else {
+   newUser.name = params.name;
+   newUser.age = params.age;
+   newUser.message = 'Created successfully';
+   users[params.name] = newUser;   
+  }
+  return respondJSON(request, response, responseCode, newUser);
 };
 
 const getUsers = (request, response) => {
